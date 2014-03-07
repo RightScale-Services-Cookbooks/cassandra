@@ -27,15 +27,6 @@ attribute "cassandra/is_seed_host",
   :default     => "false",
   :required    => "recommended"
 
-attribute "cassandra/snitch",
-  :description => "Cassandra snitch to use. See: http://www.datastax.com/documentation/cassandra/2.0/mobile/cassandra/architecture/architectureSnitchesAbout_c.html",
-  :recipes     => ["cassandra::configure"],
-  :type        => "string",
-  :display     => "cassandra/snitch",
-  :choice      => ["SimpleSnitch", "Ec2Snitch", "Ec2MultiRegionSnitch", "GossipingPropertyFileSnitch"],
-  :default     => "Ec2Snitch",
-  :required    => "recommended"
-  
 attribute "cassandra/commitlog_directory",
   :description => "Directory where Cassandra commitlogs are stored",
   :recipes     => ["cassandra::configure"],
@@ -135,4 +126,3 @@ attribute "cassandra/keystore",
   :type        => "string",
   :display     => "cassandra/keystore_url",
   :required    => "recommended"
-

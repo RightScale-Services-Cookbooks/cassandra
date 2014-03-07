@@ -31,14 +31,7 @@ dirs += node[:cassandra][:data_file_directories]
 # Find hosts that are going to be Cassandra seeds
 seed_hosts = rightscale_server_collection "seed_hosts" do
   tags ["cassandra:seed_host=true"]
-
-  # Use internal IP's if using Ec2Snitch, otherwise use public.
-  if node[:cassandra][:snitch] == "Ec2Snitch"
-    mandatory_tags ["server:private_ip_0"]
-  else
-    mandatory_tags ["server:public_ip_0"]
-  end
-
+  mandatory_tags ["server:public_ip_0"]
   empty_ok false
   action :nothing
 end
@@ -47,14 +40,7 @@ seed_hosts.run_action(:load)
 if node["server_collection"]["seed_hosts"]
   Chef::Log.info "Server collection found ..."
   node["server_collection"]["seed_hosts"].to_hash.values.each do |tag|
-
-    # Use internal IP's if using Ec2Snitch, otherwise use public.
-    if node[:cassandra][:snitch] == "Ec2Snitch"
-      seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:private_ip_0", tag))
-    else
-      seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:public_ip_0", tag))
-    end
-
+    seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:public_ip_0", tag))
   end
 end
 
@@ -76,14 +62,8 @@ template "/etc/cassandra/conf/cassandra.yaml" do
   group "cassandra"
   mode "0644"
  
-  # Use the internal IP for everything if using Ec2Snitch
-  if node[:cassandra][:snitch] == "Ec2Snitch"
-    node[:cloud][:public_ips][0] = node[:cloud][:private_ips][0]
-  end
-
   variables({
     :cluster_name           => node[:cassandra][:cluster_name],
-    :snitch                 => node[:cassandra][:snitch],
     :commitlog_directory    => node[:cassandra][:commitlog_directory],
     :data_file_directories  => node[:cassandra][:data_file_directories],
     :saved_caches_directory => node[:cassandra][:saved_caches_directory],
@@ -96,18 +76,15 @@ template "/etc/cassandra/conf/cassandra.yaml" do
   })
 end
 
-# Only install rackdc.properties if using GossipingPropertyFileSnitch
-if node[:cassandra][:snitch] == "GossipingPropertyFileSnitch"
-  template "/etc/cassandra/conf/cassandra-rackdc.properties" do
-    source "cassandra-rackdc.properties.erb"
-    owner "cassandra"
-    group "cassandra"
-    mode "0644"
-    variables({
-      :datacenter => datacenter,
-      :rack       => rack
-    })
-  end
+template "/etc/cassandra/conf/cassandra-rackdc.properties" do
+  source "cassandra-rackdc.properties.erb"
+  owner "cassandra"
+  group "cassandra"
+  mode "0644"
+  variables({
+    :datacenter => datacenter,
+    :rack       => rack
+  })
 end
 
 # Install Cassandra truststore / keystore certs if needed
