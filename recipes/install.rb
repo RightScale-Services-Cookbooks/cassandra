@@ -9,8 +9,6 @@
 
 # Recommended production settings: http://www.datastax.com/documentation/cassandra/1.2/webhelp/index.html#cassandra/install/installRecommendSettings.html
 
-rightscale_marker :begin
-
 right_link_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}"
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:version_rpm]}" do
@@ -111,5 +109,3 @@ bash "disable_swap" do
     swapoff --all
   EOM
 end
-
-rightscale_marker :end

@@ -7,8 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-rightscale_marker :begin
-
 seed_ips   = Array.new
 dirs       = Array.new
 rack       = nil
@@ -123,5 +121,3 @@ bash "start_cassandra" do
     service cassandra start
   EOM
 end
-
-rightscale_marker :end
