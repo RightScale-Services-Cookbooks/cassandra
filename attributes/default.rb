@@ -16,7 +16,7 @@ default[:datastax_rpm][:checksum]      = "e170a5236397ad37d94d833668c8a747331a1f
 
 default[:cassandra][:jre]              = "http://rs-professional-services-publishing.s3.amazonaws.com/cassandra/jre-7u45-linux-x64.rpm"
 default[:cassandra][:jre_rpm]          = "jre-7u45-linux-x64.rpm"
-default[:jre_rpm][:checksum]           "b3d28c3415cffd965a63cd789d945cf9da827d960525537cc0b10c6c6a98221a"
+default[:jre_rpm][:checksum]           = "b3d28c3415cffd965a63cd789d945cf9da827d960525537cc0b10c6c6a98221a"
 
 default[:cassandra][:us_export_policy] = "https://rs-professional-services-publishing.s3.amazonaws.com/cassandra/US_export_policy.jar"
 default[:cassandra][:local_policy]     = "https://rs-professional-services-publishing.s3.amazonaws.com/cassandra/local_policy.jar"
