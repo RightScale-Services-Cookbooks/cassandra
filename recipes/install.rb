@@ -13,19 +13,19 @@ right_link_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}"
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:version_rpm]}" do
   source "#{node[:cassandra][:version]}"
-  checksum "6e41d897c052a7d4efbbb6d2be1fb61a79492d058333ab496ef9d678910eb6e6"
+  checksum "#{node[:version_rpm][:checksum]}"
   action :create
 end
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:datastax_rpm]}" do
   source "#{node[:cassandra][:datastax]}"
-  checksum "38a29503f913daea343b22964608898f3f33c08bb02b6046ab1b9d1d12089db0"
+  checksum "#{node[:datastax_rpm][:checksum]}"
   action :create
 end
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:jre_rpm]}" do
   source "#{node[:cassandra][:jre]}"
-  checksum "b3d28c3415cffd965a63cd789d945cf9da827d960525537cc0b10c6c6a98221a"
+  checksum "#{node[:jre_rpm][:checksum]}"
   action :create
 end
 
