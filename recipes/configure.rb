@@ -12,6 +12,18 @@ dirs       = Array.new
 rack       = nil
 datacenter = nil
 
+if node[:cassandra][:listen_address] == "private_ip"
+  listen_address = node[:cloud][:private_ips][0]
+else
+  listen_address = node[:cloud][:public_ips][0]
+end
+
+if node[:cassandra][:broadcast_address] == "private_ip"
+  broadcast_address = node[:cloud][:private_ips][0]
+else
+  broadcast_address = node[:cloud][:public_ips][0]
+end
+
 # Find datacenter and rack that this host belongs to
 if node[:cloud][:provider] == "ec2"
   datacenter = "ec2-#{node[:ec2][:placement][:availability_zone].chop}"
@@ -68,8 +80,8 @@ template "/etc/cassandra/conf/cassandra.yaml" do
     :encryption_password    => node[:cassandra][:encryption_password],
     :authorizer             => node[:cassandra][:authorizer],
     :authenticator          => node[:cassandra][:authenticator],
-    :listen_address         => node[:cloud][:private_ips][0],
-    :broadcast_address      => node[:cloud][:public_ips][0],
+    :listen_address         => listen_address,
+    :broadcast_address      => broadcast_address,
     :seeds                  => seed_ips
   })
 end
