@@ -20,12 +20,28 @@ attribute "cassandra/cluster_name",
 
 attribute "cassandra/is_seed_host",
   :description => "Is this host going to be a seed host?",
-  :recipes     => ["cassandra::install"],
+  :recipes     => ["cassandra::configure", "cassandra::install"],
   :type        => "string",
   :display     => "cassandra/is_seed_host",
   :choice      => ["true", "false"],
   :default     => "false",
   :required    => "recommended"
+
+attribute "cassandra/listen_address",
+  :description => "Address to bind to",
+  :recipes     => ["cassandra::configure"],
+  :type        => "string",
+  :display     => "cassandra/listen_address",
+  :choice      => ["private_ip", "public_ip"],
+  :required    => "required"
+
+attribute "cassandra/broadcast_address",
+  :description => "Address to broadcast to other Cassandra nodes",
+  :recipes     => ["cassandra::configure"],
+  :type        => "string",
+  :display     => "cassandra/broadcast_address",
+  :choice      => ["private_ip", "public_ip"],
+  :required    => "required"
 
 attribute "cassandra/commitlog_directory",
   :description => "Directory where Cassandra commitlogs are stored",
@@ -61,7 +77,8 @@ attribute "cassandra/require_inter_node_encryption",
   :default     => "false"
 
 attribute "cassandra/encryption_password",
-  :description => "The password to be used for the keystore and truststore files",
+  :description => "The password to be used for the keystore and truststore files " +
+                    "(not used if encryption is not enabled).",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/encryption_password",
@@ -86,27 +103,31 @@ attribute "cassandra/authorizer",
   :default     => "AllowAllAuthorizer"
 
 attribute "cassandra/bucket",
-  :description => "S3 / Cloudfiles bucket where truststore / keystore are located",
+  :description => "S3 / Cloudfiles bucket where truststore / keystore are located " +
+                    "(not needed if not using encryption).",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/bucket",
   :required    => "recommended"
 
 attribute "cassandra/provider",
-  :description => "File storage provider where truststore / keystore are located (if using encryption, otherwise ignore)",
+  :description => "File storage provider where truststore / keystore are located " +
+                    "(not needed if not using encryption).",
   :recipes => ["cassandra::configure"],
   :type => "string",
   :display => "cassandra/provider",
   :choice => ["S3", "cloudfiles"]
 
 attribute "cassandra/storage_account_id",
-  :description => "Access key ID of storage provider",
+  :description => "Access key ID of storage provider " +
+                    "(not needed if not using encryption).",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/storage_account_id",
   :required    => "recommended"
 
-attribute "cassandra/storage_account_secret",
+attribute "cassandra/storage_account_secret " +
+            "(not needed if not using encryption).",
   :description => "Secret key ID of storage provider",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
@@ -114,14 +135,16 @@ attribute "cassandra/storage_account_secret",
   :required    => "recommended"
 
 attribute "cassandra/truststore",
-  :description => "Location of truststore in bucket (if using encryption see documentation for creating this file).",
+  :description => "Location of truststore in bucket " +
+                    "(if using encryption see documentation for creating this file).",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/truststore_url",
   :required    => "recommended"
 
 attribute "cassandra/keystore",
-  :description => "Location of keystore in bucket (if using encryption see documentation for creating this file).",
+  :description => "Location of keystore in bucket " +
+                    "(if using encryption see documentation for creating this file).",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/keystore_url",
