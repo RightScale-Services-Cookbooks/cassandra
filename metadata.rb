@@ -126,9 +126,9 @@ attribute "cassandra/storage_account_id",
   :display     => "cassandra/storage_account_id",
   :required    => "recommended"
 
-attribute "cassandra/storage_account_secret " +
+attribute "cassandra/storage_account_secret",
+  :description => "Secret key ID of storage provider " +
             "(not needed if not using encryption).",
-  :description => "Secret key ID of storage provider",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/storage_account_secret",
