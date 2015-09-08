@@ -8,7 +8,7 @@ version          '2.0.10'
 
 depends "rightscale"
 
-recipe "cassandra::install", "Downloads Cassandra RPM's and Oracle JRE"
+recipe "cassandra::install", "Downloads and installs Cassandra archive"
 recipe "cassandra::configure", "Configures cassandra.yaml and starts the service"
 
 attribute "cassandra/cluster_name",
@@ -17,6 +17,13 @@ attribute "cassandra/cluster_name",
 	:type        => "string",
 	:display     => "cassandra/cluster_name",
 	:required    => "required"
+
+attribute "cassandra/url",
+  :description => "Location of Cassandra .tar.gz to download and install.",
+  :recipes     => ["cassandra::configure"],
+  :type        => "string",
+  :display     => "cassandra/url",
+  :required    => "required"
 
 attribute "cassandra/is_seed_host",
   :description => "Is this host going to be a seed host?",
