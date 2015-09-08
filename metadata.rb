@@ -18,7 +18,7 @@ attribute "cassandra/cluster_name",
 
 attribute "cassandra/url",
   :description => "Location of Cassandra .tar.gz to download and install.",
-  :recipes     => ["cassandra::configure"],
+  :recipes     => ["cassandra::install"],
   :type        => "string",
   :display     => "cassandra/url",
   :required    => "required"
