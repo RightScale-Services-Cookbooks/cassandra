@@ -24,7 +24,7 @@ execute "untar Cassandra" do
 end
 
 execute "Delete Windows configs" do
-  command "rm /opt/#{install_dir}/bin/*.ps1 /opt/#{install_dir}/*.ps1"
+  command "rm -f /opt/#{install_dir}/bin/*.ps1 /opt/#{install_dir}/*.bat"
 end
 
 #cookbook_file "/etc/sysctl.conf" do
