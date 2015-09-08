@@ -9,74 +9,20 @@
 
 # Recommended production settings: http://www.datastax.com/documentation/cassandra/1.2/webhelp/index.html#cassandra/install/installRecommendSettings.html
 
-right_link_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}"
+#right_link_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}"
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:version_rpm]}" do
-  source "#{node[:cassandra][:version]}"
-  checksum "#{node[:version_rpm][:checksum]}"
+tarball = node[:cassandra][:url].split('/').last
+install_dir = tarball.gsub(/-bin.tar.gz$/, "")
+
+remote_file "#{Chef::Config[:file_cache_path]}/#{tarball}" do
+  source node[:cassandra][:url]
   action :create
 end
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:datastax_rpm]}" do
-  source "#{node[:cassandra][:datastax]}"
-  checksum "#{node[:datastax_rpm][:checksum]}"
-  action :create
+execute "untar Cassandra" do
+  command "tar zxf #{Chef::Config[:file_cache_path]}/#{tarball} -C /opt"
 end
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:jre_rpm]}" do
-  source "#{node[:cassandra][:jre]}"
-  checksum "#{node[:jre_rpm][:checksum]}"
-  action :create
-end
-
-package "jna" do
-  action :install
-end
-
-package "cassandra12" do
-  action :install
-  source "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:version_rpm]}"
-  provider Chef::Provider::Package::Rpm
-end
-
-package "dsc12" do
-  action :install
-  source "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:datastax_rpm]}"
-  provider Chef::Provider::Package::Rpm
-end
-
-package "jre" do
-  action :install
-  source "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:jre_rpm]}"
-  provider Chef::Provider::Package::Rpm
-end
-
-remote_file "/usr/java/jre1.7.0_45/lib/security/US_export_policy.jar" do
-  source "#{node[:cassandra][:us_export_policy]}"
-  checksum "b800fef6edc0f74560608cecf3775f7a91eb08d6c3417aed81a87c6371726115"
-  owner "root"
-  group "root"
-  mode "0644"
-  backup false
-  action :create
-end
-
-remote_file "/usr/java/jre1.7.0_45/lib/security/local_policy.jar" do
-  source "#{node[:cassandra][:local_policy]}"
-  checksum "4a5c8f64107c349c662ea688563e5cd07d675255289ab25246a3a46fc4f85767"
-  owner "root"
-  group "root"
-  mode "0644"
-  backup false
-  action :create
-end
-
-bash "update_alternatives_to_oracle_java" do
-  flags "-ex"
-  code <<-EOM
-    alternatives --install /usr/bin/java java /usr/java/jre1.7.0_45/bin/java 20000
-  EOM
-end
 
 cookbook_file "/etc/sysctl.conf" do
   source "sysctl.conf"
