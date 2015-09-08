@@ -9,7 +9,11 @@
 
 # Recommended production settings: http://www.datastax.com/documentation/cassandra/1.2/webhelp/index.html#cassandra/install/installRecommendSettings.html
 
-#right_link_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}"
+include_recipe "machine_tag::default"
+
+machine_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}" do
+  action :create
+end
 
 tarball = node[:cassandra][:url].split('/').last
 install_dir = tarball.gsub(/-bin.tar.gz$/, "")
