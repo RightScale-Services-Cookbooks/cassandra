@@ -6,8 +6,6 @@ description      'Installs/Configures cassandra'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '2.1.9'
 
-depends "rightscale"
-
 recipe "cassandra::install", "Downloads and installs Cassandra archive"
 recipe "cassandra::configure", "Configures cassandra.yaml and starts the service"
 
