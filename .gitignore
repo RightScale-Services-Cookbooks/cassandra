@@ -1,2 +1,12 @@
+# rbenv
 .gems
+.rbenv-gemsets
+
+# kitchen
 .kitchen
+
+# berkshelf
+Berksfile.lock
+
+# Bundler
+Gemfile.lock
