@@ -23,31 +23,34 @@ execute "untar Cassandra" do
   command "tar zxf #{Chef::Config[:file_cache_path]}/#{tarball} -C /opt"
 end
 
-
-cookbook_file "/etc/sysctl.conf" do
-  source "sysctl.conf"
-  mode "0644"
-  owner "root"
-  group "root"
-  action :create
+execute "Delete Windows configs" do
+  command "rm /opt/#{install_dir}/bin/*.ps1 /opt/#{install_dir}/*.ps1"
 end
 
-cookbook_file "/etc/security/limits.d/cassandra.conf" do
-  source "cassandra.conf"
-  owner "root"
-  group "root"
-  mode "0644"
-  backup false
-  action :create
-end
+#cookbook_file "/etc/sysctl.conf" do
+  #source "sysctl.conf"
+  #mode "0644"
+  #owner "root"
+  #group "root"
+  #action :create
+#end
 
-cookbook_file "/etc/cassandra/conf/cassandra-env.sh" do
-  source "cassandra-env.sh"
-  owner "cassandra"
-  group "cassandra"
-  mode "0755"
-  action :create
-end
+#cookbook_file "/etc/security/limits.d/cassandra.conf" do
+  #source "cassandra.conf"
+  #owner "root"
+  #group "root"
+  #mode "0644"
+  #backup false
+  #action :create
+#end
+
+#cookbook_file "/etc/cassandra/conf/cassandra-env.sh" do
+  #source "cassandra-env.sh"
+  #owner "cassandra"
+  #group "cassandra"
+  #mode "0755"
+  #action :create
+#end
 
 bash "disable_swap" do
   flags "-ex"
