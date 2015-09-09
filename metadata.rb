@@ -36,14 +36,14 @@ attribute "cassandra/is_seed_host",
 
 attribute "cassandra/listen_address",
   :description => "Address to bind to",
-  :recipes     => ["cassandra::configure"],
+  :recipes     => ["cassandra::install", "cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/listen_address",
   :required    => "required"
 
 attribute "cassandra/broadcast_address",
   :description => "Address to broadcast to other Cassandra nodes",
-  :recipes     => ["cassandra::configure"],
+  :recipes     => ["cassandra::install", "cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/broadcast_address",
   :required    => "required"
