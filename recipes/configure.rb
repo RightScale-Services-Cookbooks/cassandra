@@ -1,4 +1,5 @@
-#
+seed_hosts.each do |seed|
+  #
 # Cookbook Name:: cassandra
 # Recipe:: configure
 #
@@ -7,22 +8,17 @@
 # All rights reserved - Do Not Redistribute
 #
 
+class Chef::Recipe
+  include Chef::MachineTagHelper
+end
+
 seed_ips   = Array.new
 dirs       = Array.new
 rack       = nil
 datacenter = nil
 
-if node[:cassandra][:listen_address] == "private_ip"
-  listen_address = node[:cloud][:private_ips][0]
-else
-  listen_address = node[:cloud][:public_ips][0]
-end
-
-if node[:cassandra][:broadcast_address] == "private_ip"
-  broadcast_address = node[:cloud][:private_ips][0]
-else
-  broadcast_address = node[:cloud][:public_ips][0]
-end
+listen_address    = node[:cassandra][:listen_address]
+broadcast_address = node[:cassandra][:broadcast_address]
 
 # Find datacenter and rack that this host belongs to
 if node[:cloud][:provider] == "ec2"
@@ -39,13 +35,10 @@ dirs.push(node[:cassandra][:saved_caches_directory])
 dirs += node[:cassandra][:data_file_directories]
 
 # Find hosts that are going to be Cassandra seeds
-seed_hosts = rightscale_server_collection "seed_hosts" do
-  tags ["cassandra:seed_host=true"]
-  mandatory_tags ["server:public_ip_0", "server:private_ip_0"]
-  empty_ok false
-  action :nothing
-end
-seed_hosts.run_action(:load)
+seed_hosts = tag_search(node, "cassandra:seed_host=true")
+
+__END__
+
 
 if node["server_collection"]["seed_hosts"]
   Chef::Log.info "Server collection found ..."
