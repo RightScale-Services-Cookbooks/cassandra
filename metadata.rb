@@ -34,21 +34,19 @@ attribute "cassandra/is_seed_host",
   :default     => "false",
   :required    => "recommended"
 
-#attribute "cassandra/listen_address",
-  #:description => "Address to bind to",
-  #:recipes     => ["cassandra::configure"],
-  #:type        => "string",
-  #:display     => "cassandra/listen_address",
-  #:choice      => ["private_ip", "public_ip"],
-  #:required    => "required"
+attribute "cassandra/listen_address",
+  :description => "Address to bind to",
+  :recipes     => ["cassandra::configure"],
+  :type        => "string",
+  :display     => "cassandra/listen_address",
+  :required    => "required"
 
-#attribute "cassandra/broadcast_address",
-  #:description => "Address to broadcast to other Cassandra nodes",
-  #:recipes     => ["cassandra::configure"],
-  #:type        => "string",
-  #:display     => "cassandra/broadcast_address",
-  #:choice      => ["private_ip", "public_ip"],
-  #:required    => "required"
+attribute "cassandra/broadcast_address",
+  :description => "Address to broadcast to other Cassandra nodes",
+  :recipes     => ["cassandra::configure"],
+  :type        => "string",
+  :display     => "cassandra/broadcast_address",
+  :required    => "required"
 
 attribute "cassandra/commitlog_directory",
   :description => "Directory where Cassandra commitlogs are stored",
