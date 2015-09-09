@@ -11,13 +11,18 @@
 
 include_recipe "machine_tag::default"
 
+# Tag host with seed status
 machine_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}" do
   action :create
 end
 
+# Find install file name
 tarball = node[:cassandra][:url].split('/').last
+
+# Full path to install directory
 install_dir = tarball.gsub(/-bin.tar.gz$/, "")
 
+# Download Cassandra to Chef cache
 remote_file "#{Chef::Config[:file_cache_path]}/#{tarball}" do
   source node[:cassandra][:url]
   action :create
