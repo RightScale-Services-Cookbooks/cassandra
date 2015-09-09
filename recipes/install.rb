@@ -16,6 +16,15 @@ machine_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}" do
   action :create
 end
 
+# Tag host with broadcast and listen addresses for discovery
+machine_tag "cassandra:broadcast_address=#{node[:cassandra][:broadcast_address]}" do
+  action :create
+end
+
+machine_tag "cassandra:listen_address=#{node[:cassandra][:listen_address]}" do
+  action :create
+end
+
 # Find install file name
 tarball = node[:cassandra][:url].split('/').last
 

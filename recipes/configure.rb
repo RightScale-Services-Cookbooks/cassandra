@@ -1,5 +1,4 @@
-seed_hosts.each do |seed|
-  #
+#
 # Cookbook Name:: cassandra
 # Recipe:: configure
 #
@@ -12,13 +11,8 @@ class Chef::Recipe
   include Chef::MachineTagHelper
 end
 
-seed_ips   = Array.new
-dirs       = Array.new
-rack       = nil
-datacenter = nil
-
-listen_address    = node[:cassandra][:listen_address]
-broadcast_address = node[:cassandra][:broadcast_address]
+seed_ips, dirs = Array.new, Array.new
+rack, datacenter = nil, nil
 
 # Find datacenter and rack that this host belongs to
 if node[:cloud][:provider] == "ec2"
@@ -37,19 +31,10 @@ dirs += node[:cassandra][:data_file_directories]
 # Find hosts that are going to be Cassandra seeds
 seed_hosts = tag_search(node, "cassandra:seed_host=true")
 
-__END__
-
-
-if node["server_collection"]["seed_hosts"]
-  Chef::Log.info "Server collection found ..."
-  node["server_collection"]["seed_hosts"].to_hash.values.each do |tag|
-    if node[:cassandra][:broadcast_address] == "private_ip"
-      seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:private_ip_0", tag))
-    else
-      seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:public_ip_0", tag))
-    end
-  end
+seed_hosts.each do |seed|
+  seed_ips << seed["cassandra:broadcast_address"].first.split("=").last
 end
+
 
 # Create Cassandra directories
 dirs.each do |dir|
@@ -77,8 +62,8 @@ template "/etc/cassandra/conf/cassandra.yaml" do
     :encryption_password    => node[:cassandra][:encryption_password],
     :authorizer             => node[:cassandra][:authorizer],
     :authenticator          => node[:cassandra][:authenticator],
-    :listen_address         => listen_address,
-    :broadcast_address      => broadcast_address,
+    :listen_address         => node[:cassandra][:listen_address],
+    :broadcast_address      => node[:cassandra][:broadcast_address],
     :seeds                  => seed_ips
   })
 end
@@ -117,16 +102,4 @@ if node[:cassandra][:require_inter_node_encryption] == "true"
       chown cassandra:cassandra /etc/cassandra/conf/truststore
     EOM
   end
-end
-
-service "cassandra" do
-  action :enable
-end
-
-# Starting Cassandra via service above silently fails for some reason. Start it via the cli instead.
-bash "start_cassandra" do
-  flags "-ex"
-  code <<-EOM
-    service cassandra start
-  EOM
 end
