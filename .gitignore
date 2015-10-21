@@ -1,2 +1,4 @@
 .gems
 .rbenv-gemsets
+Berksfile.lock
+Gemfile.lock
