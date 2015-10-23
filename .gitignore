@@ -2,3 +2,5 @@
 .rbenv-gemsets
 Berksfile.lock
 Gemfile.lock
+.kitchen/
+.kitchen.local.yml

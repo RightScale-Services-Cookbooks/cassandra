@@ -9,73 +9,52 @@
 
 # Recommended production settings: http://www.datastax.com/documentation/cassandra/1.2/webhelp/index.html#cassandra/install/installRecommendSettings.html
 
-right_link_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}"
+include_recipe "machine_tag::default"
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:version_rpm]}" do
-  source "#{node[:cassandra][:version]}"
-  checksum "#{node[:version_rpm][:checksum]}"
+machine_tag "cassandra:seed_host=#{node[:cassandra][:is_seed_host]}" do
   action :create
 end
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:datastax_rpm]}" do
-  source "#{node[:cassandra][:datastax]}"
-  checksum "#{node[:datastax_rpm][:checksum]}"
+# Tag host with broadcast and listen addresses for discovery
+machine_tag "cassandra:broadcast_address=#{node[:cassandra][:broadcast_address]}" do
   action :create
 end
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:jre_rpm]}" do
-  source "#{node[:cassandra][:jre]}"
-  checksum "#{node[:jre_rpm][:checksum]}"
+machine_tag "cassandra:listen_address=#{node[:cassandra][:listen_address]}" do
   action :create
 end
 
-package "jna" do
-  action :install
-end
+# Find install file name
+tarball = node[:cassandra][:url].split('/').last
 
-package "cassandra12" do
-  action :install
-  source "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:version_rpm]}"
-  provider Chef::Provider::Package::Rpm
-end
+# Full path to install directory
+install_dir = tarball.gsub(/-bin.tar.gz$/, "")
 
-package "dsc12" do
-  action :install
-  source "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:datastax_rpm]}"
-  provider Chef::Provider::Package::Rpm
-end
-
-package "jre" do
-  action :install
-  source "#{Chef::Config[:file_cache_path]}/#{node[:cassandra][:jre_rpm]}"
-  provider Chef::Provider::Package::Rpm
-end
-
-remote_file "/usr/java/jre1.7.0_45/lib/security/US_export_policy.jar" do
-  source "#{node[:cassandra][:us_export_policy]}"
-  checksum "b800fef6edc0f74560608cecf3775f7a91eb08d6c3417aed81a87c6371726115"
-  owner "root"
-  group "root"
-  mode "0644"
-  backup false
+# Download Cassandra to Chef cache
+remote_file "#{Chef::Config[:file_cache_path]}/#{tarball}" do
+  source node[:cassandra][:url]
   action :create
 end
 
-remote_file "/usr/java/jre1.7.0_45/lib/security/local_policy.jar" do
-  source "#{node[:cassandra][:local_policy]}"
-  checksum "4a5c8f64107c349c662ea688563e5cd07d675255289ab25246a3a46fc4f85767"
-  owner "root"
-  group "root"
-  mode "0644"
-  backup false
+execute "untar Cassandra" do
+  command "tar zxf #{Chef::Config[:file_cache_path]}/#{tarball} -C /opt"
+end
+
+execute "Delete Windows configs" do
+  command "rm -f /opt/#{install_dir}/bin/*.ps1 /opt/#{install_dir}/*.bat"
+end
+
+group "cassandra" do
   action :create
 end
 
-bash "update_alternatives_to_oracle_java" do
-  flags "-ex"
-  code <<-EOM
-    alternatives --install /usr/bin/java java /usr/java/jre1.7.0_45/bin/java 20000
-  EOM
+user "cassandra" do
+  group "cassandra"
+  action :create
+end
+
+directory "/etc/cassandra/conf" do
+  recursive true
 end
 
 cookbook_file "/etc/sysctl.conf" do
