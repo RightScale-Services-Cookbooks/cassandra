@@ -14,70 +14,19 @@ end
 include_recipe 'machine_tag::default'
 
 seed_hosts = []
+dirs = []
 tag_results = tag_search(node, 'cassandra:seed_host=true')
 
-Chef::Log.info tag_results
 
 tag_results.each do |host|
-  ip_address = host['server:private_ip_0'].first.split('=').last
+  ip_address = host['cassandra:broadcast_address'].first.split('=').last
   seed_hosts << ip_address
-end
-
-puts seed_hosts
-
-
-
-=begin
-seed_ips   = Array.new
-dirs       = Array.new
-rack       = nil
-datacenter = nil
-
-if node[:cassandra][:listen_address] == "private_ip"
-  listen_address = node[:cloud][:private_ips][0]
-else
-  listen_address = node[:cloud][:public_ips][0]
-end
-
-if node[:cassandra][:broadcast_address] == "private_ip"
-  broadcast_address = node[:cloud][:private_ips][0]
-else
-  broadcast_address = node[:cloud][:public_ips][0]
-end
-
-# Find datacenter and rack that this host belongs to
-if node[:cloud][:provider] == "ec2"
-  datacenter = "ec2-#{node[:ec2][:placement][:availability_zone].chop}"
-  rack       = "#{node[:ec2][:placement][:availability_zone]}"
-elsif node[:cloud][:provider] == "google"
-  datacenter = "google-#{node[:google][:zone].split('/').last.chop.chop}"
-  rack       =  "#{node[:google][:zone].split('/').last}"
 end
 
 # Collect directories to create
 dirs.push(node[:cassandra][:commitlog_directory])
 dirs.push(node[:cassandra][:saved_caches_directory])
 dirs += node[:cassandra][:data_file_directories]
-
-# Find hosts that are going to be Cassandra seeds
-seed_hosts = rightscale_server_collection "seed_hosts" do
-  tags ["cassandra:seed_host=true"]
-  mandatory_tags ["server:public_ip_0", "server:private_ip_0"]
-  empty_ok false
-  action :nothing
-end
-seed_hosts.run_action(:load)
-
-if node["server_collection"]["seed_hosts"]
-  Chef::Log.info "Server collection found ..."
-  node["server_collection"]["seed_hosts"].to_hash.values.each do |tag|
-    if node[:cassandra][:broadcast_address] == "private_ip"
-      seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:private_ip_0", tag))
-    else
-      seed_ips.push(RightScale::Utils::Helper.get_tag_value("server:public_ip_0", tag))
-    end
-  end
-end
 
 # Create Cassandra directories
 dirs.each do |dir|
@@ -102,15 +51,16 @@ template "/etc/cassandra/conf/cassandra.yaml" do
     :commitlog_directory    => node[:cassandra][:commitlog_directory],
     :data_file_directories  => node[:cassandra][:data_file_directories],
     :saved_caches_directory => node[:cassandra][:saved_caches_directory],
-    :encryption_password    => node[:cassandra][:encryption_password],
-    :authorizer             => node[:cassandra][:authorizer],
-    :authenticator          => node[:cassandra][:authenticator],
+#    :encryption_password    => node[:cassandra][:encryption_password],
+#    :authorizer             => node[:cassandra][:authorizer],
+#    :authenticator          => node[:cassandra][:authenticator],
     :listen_address         => listen_address,
     :broadcast_address      => broadcast_address,
-    :seeds                  => seed_ips
+    :seeds                  => seed_hosts
   })
 end
 
+=begin
 template "/etc/cassandra/conf/cassandra-rackdc.properties" do
   source "cassandra-rackdc.properties.erb"
   owner "cassandra"
@@ -146,6 +96,7 @@ if node[:cassandra][:require_inter_node_encryption] == "true"
     EOM
   end
 end
+=end
 
 service "cassandra" do
   action :enable
