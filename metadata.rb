@@ -48,7 +48,7 @@ attribute "cassandra/broadcast_address",
   :type        => "string",
   :display     => "cassandra/broadcast_address",
   :required    => "required"
-=begin
+
 attribute "cassandra/commitlog_directory",
   :description => "Directory where Cassandra commitlogs are stored",
   :recipes     => ["cassandra::configure"],
@@ -73,6 +73,7 @@ attribute "cassandra/saved_caches_directory",
   :required    => "recommended",
   :default     => "/mnt/ephemeral/cassandra/saved_caches"
 
+=begin
 attribute "cassandra/require_inter_node_encryption",
   :description => "Enable encryption between Cassandra nodes?",
   :recipe      => ["cassandra::configure"],
