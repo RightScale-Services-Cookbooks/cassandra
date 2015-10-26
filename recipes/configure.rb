@@ -109,4 +109,3 @@ bash "start_cassandra" do
     service cassandra start
   EOM
 end
-=end
