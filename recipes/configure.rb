@@ -54,8 +54,8 @@ template "/etc/cassandra/conf/cassandra.yaml" do
 #    :encryption_password    => node[:cassandra][:encryption_password],
 #    :authorizer             => node[:cassandra][:authorizer],
 #    :authenticator          => node[:cassandra][:authenticator],
-    :listen_address         => listen_address,
-    :broadcast_address      => broadcast_address,
+    :listen_address         => node[:cassandra][:listen_address],
+    :broadcast_address      => node[:cassandra][:broadcast_address],
     :seeds                  => seed_hosts
   })
 end
