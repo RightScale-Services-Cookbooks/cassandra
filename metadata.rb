@@ -33,7 +33,6 @@ attribute "cassandra/listen_address",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/listen_address",
-  :choice      => ["private_ip", "public_ip"],
   :required    => "required"
 
 attribute "cassandra/broadcast_address",
@@ -41,7 +40,6 @@ attribute "cassandra/broadcast_address",
   :recipes     => ["cassandra::configure"],
   :type        => "string",
   :display     => "cassandra/broadcast_address",
-  :choice      => ["private_ip", "public_ip"],
   :required    => "required"
 
 attribute "cassandra/commitlog_directory",

@@ -7,6 +7,27 @@
 # All rights reserved - Do Not Redistribute
 #
 
+class Chef::Recipe
+    include Chef::MachineTagHelper
+end
+
+include_recipe 'machine_tag::default'
+
+seed_hosts = []
+tag_results = tag_search(node, 'cassandra:seed_host=true')
+
+Chef::Log.info tag_results
+
+tag_results.each do |host|
+  ip_address = host['server:private_ip_0'].first.split('=').last
+  seed_hosts << ip_address
+end
+
+puts seed_hosts
+
+
+
+=begin
 seed_ips   = Array.new
 dirs       = Array.new
 rack       = nil
@@ -137,3 +158,4 @@ bash "start_cassandra" do
     service cassandra start
   EOM
 end
+=end

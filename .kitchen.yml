@@ -1,0 +1,25 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-14.04
+    driver: vagrant
+#  - name: centos-7.1
+
+suites:
+  - name: default
+    run_list:
+      - recipe[cassandra::install]
+      - recipe[cassandra::configure]
+    attributes: 
+      cassandra:
+        is_seed_host: true
+        broadcast_address: 0.0.0.0
+        listen_address: 0.0.0.0
+        url: http://apache.arvixe.com/cassandra/2.2.3/apache-cassandra-2.2.3-bin.tar.gz
+      cloud:
+        provider: vagrant
