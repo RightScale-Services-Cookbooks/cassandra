@@ -41,7 +41,8 @@ end
 
 # Install main Cassandra config file
 template "/etc/cassandra/conf/cassandra.yaml" do
-  source "#{node[:cassandra][:require_inter_node_encryption]}-cassandra.yaml.erb"
+#  source "#{node[:cassandra][:require_inter_node_encryption]}-cassandra.yaml.erb"
+  source "cassandra.yaml.erb"
   owner "cassandra"
   group "cassandra"
   mode "0644"
