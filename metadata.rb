@@ -19,6 +19,13 @@ attribute "cassandra/cluster_name",
 	:display     => "cassandra/cluster_name",
 	:required    => "required"
 
+attribute "cassandra/url",
+  :description => "URL where Cassandra tar is to be downloaded from",
+  :recipes => ["cassandra::install"],
+  :type => "string",
+  :display => "cassandra/url",
+  :required => "required"
+
 attribute "cassandra/is_seed_host",
   :description => "Is this host going to be a seed host?",
   :recipes     => ["cassandra::configure", "cassandra::install"],
@@ -41,7 +48,7 @@ attribute "cassandra/broadcast_address",
   :type        => "string",
   :display     => "cassandra/broadcast_address",
   :required    => "required"
-
+=begin
 attribute "cassandra/commitlog_directory",
   :description => "Directory where Cassandra commitlogs are stored",
   :recipes     => ["cassandra::configure"],
@@ -148,3 +155,4 @@ attribute "cassandra/keystore",
   :type        => "string",
   :display     => "cassandra/keystore_url",
   :required    => "recommended"
+=end
