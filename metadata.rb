@@ -49,29 +49,29 @@ attribute "cassandra/broadcast_address",
   :display     => "cassandra/broadcast_address",
   :required    => "required"
 
-attribute "cassandra/commitlog_directory",
-  :description => "Directory where Cassandra commitlogs are stored",
-  :recipes     => ["cassandra::configure"],
-  :type        => "string",
-  :display     => "cassandra/commitlog_directory",
-  :required    => "recommended",
-  :default     => "/mnt/ephemeral/cassandra/commitlog"
+#attribute "cassandra/commitlog_directory",
+  #:description => "Directory where Cassandra commitlogs are stored",
+  #:recipes     => ["cassandra::configure"],
+  #:type        => "string",
+  #:display     => "cassandra/commitlog_directory",
+  #:required    => "recommended",
+  #:default     => "/mnt/ephemeral/cassandra/commitlog"
 
-attribute "cassandra/data_file_directories",
-  :description => "Comma separated list of directories where Cassandra data files should be stored",
-  :recipes     => ["cassandra::configure"],
-  :type        => "array",
-  :display     => "cassandra/data_file_directories",
-  :required    => "recommended",
-  :default     => "/mnt/ephemeral/cassandra/data"
+#attribute "cassandra/data_file_directories",
+  #:description => "Comma separated list of directories where Cassandra data files should be stored",
+  #:recipes     => ["cassandra::configure"],
+  #:type        => "array",
+  #:display     => "cassandra/data_file_directories",
+  #:required    => "recommended",
+  #:default     => "/mnt/ephemeral/cassandra/data"
 
-attribute "cassandra/saved_caches_directory",
-  :description => "Directory where Cassandra saved caches are stored",
-  :recipes     => ["cassandra::configure"],
-  :type        => "string",
-  :display     => "cassandra/saved_caches_directory",
-  :required    => "recommended",
-  :default     => "/mnt/ephemeral/cassandra/saved_caches"
+#attribute "cassandra/saved_caches_directory",
+  #:description => "Directory where Cassandra saved caches are stored",
+  #:recipes     => ["cassandra::configure"],
+  #:type        => "string",
+  #:display     => "cassandra/saved_caches_directory",
+  #:required    => "recommended",
+  #:default     => "/mnt/ephemeral/cassandra/saved_caches"
 
 =begin
 attribute "cassandra/require_inter_node_encryption",

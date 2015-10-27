@@ -49,9 +49,9 @@ template "/etc/cassandra/conf/cassandra.yaml" do
  
   variables({
     :cluster_name           => node[:cassandra][:cluster_name],
-    :commitlog_directory    => node[:cassandra][:commitlog_directory],
-    :data_file_directories  => node[:cassandra][:data_file_directories],
-    :saved_caches_directory => node[:cassandra][:saved_caches_directory],
+#    :commitlog_directory    => node[:cassandra][:commitlog_directory],
+#    :data_file_directories  => node[:cassandra][:data_file_directories],
+#    :saved_caches_directory => node[:cassandra][:saved_caches_directory],
 #    :encryption_password    => node[:cassandra][:encryption_password],
 #    :authorizer             => node[:cassandra][:authorizer],
 #    :authenticator          => node[:cassandra][:authenticator],
